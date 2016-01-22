@@ -1,10 +1,10 @@
 {
   "ID": "A766ABFEB913443996F41690A3CE2CFB",
-  "ActionKeywords": [ "rdp", ],
+  "ActionKeywords": "rdp",
   "Name": "RDP",
   "Description": "RDP History",
   "Author": "yinseny",
-  "Version": "1.0.0",
+  "Version": "1.0.1",
   "Language": "csharp",
   "Website": "http://www.getwox.com/plugin",
   "ExecuteFileName": "Wox.Plugin.RDP.dll",
