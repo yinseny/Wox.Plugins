@@ -5,6 +5,17 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wox.Plugin.RDP", "Wox.Plugin.RDP\Wox.Plugin.RDP.csproj", "{00CBF5B2-FA79-4A07-86FB-D9571FEA2F0B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B515031D-B1C0-4A2D-B931-DA0D8AD1F2E8}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Screenshots", "Screenshots", "{05365F29-033A-4523-9715-64BCC2A762FE}"
+	ProjectSection(SolutionItems) = preProject
+		Screenshots\Wox.Plugin.RDP.png = Screenshots\Wox.Plugin.RDP.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
