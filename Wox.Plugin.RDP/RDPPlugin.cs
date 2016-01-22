@@ -17,7 +17,7 @@ namespace Wox.Plugin.RDP
         public List<Result> Query(Query query)
         {
             var results = new List<Result>();
-            var result = CreateCustomInputResult(query.Search);
+            var result = CreateCustomInputResult(query);
             if(result != null)
                 results.Add(result);
             results.AddRange(GetRdpSessions(query.Search));
@@ -39,52 +39,55 @@ namespace Wox.Plugin.RDP
                         if(serverName.StartsWith(search) == false)
                             continue;
                         var username = serverKey.GetValue("UsernameHint", string.Empty).ToString();
-                        yield return CreateResult(serverName, username);
+                        yield return CreateSavedResult(serverName, username);
                     }
                 }
             }
         }
 
-        private static Result CreateCustomInputResult(string search)
+        private static Result CreateCustomInputResult(Query query)
         {
-            if(search == null || search.Trim() == string.Empty)
+            if(query.Search == null || query.Search.Trim() == string.Empty)
                 return null;
-            var p = search.IndexOf(' ');
-            string serverName;
-            string userName = null;
-            if(p < 0)
-                serverName = search;
-            else
-            {
-                serverName = search.Substring(0, p);
-                userName = search.Substring(p + 1);
-            }
-            var reult = CreateResult(serverName, userName);
-            reult.Score = int.MaxValue;
-            return reult;
-        }
 
-        private static Result CreateResult(string serverName, string userName)
-        {
-            var result = new Result(serverName, ICON_PATH, userName) {Action = context => Run(serverName, userName)};
+            var serverName = query.FirstSearch;
+            var userName = query.SecondSearch;
+            var password = query.ThirdSearch;
+
+            var result = new Result(serverName, ICON_PATH, string.Format("User:{0} Password:{1}", userName, password))
+                         {
+                             Action = context => Run(serverName, userName, password),
+                             Score = int.MaxValue
+                         };
             return result;
         }
 
-        private static bool Run(string serverName, string userName)
+        private static Result CreateSavedResult(string serverName, string userName)
+        {
+            var result = new Result(serverName, ICON_PATH, userName) {Action = context => Run(serverName)};
+            return result;
+        }
+
+        private static bool Run(string serverName, string userName = null, string password = null)
         {
             //thanks to https://stackoverflow.com/questions/11296819/run-mstsc-exe-with-specified-username-and-password
-            var rdcProcess = new Process();
-            rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-            rdcProcess.StartInfo.Arguments = string.Format("/generic:TERMSRV/{0} /user:{1}", serverName, userName);
-            rdcProcess.Start();
+            using(var rdcProcess = new Process())
+            {
+                if(string.IsNullOrEmpty(userName) == false)
+                {
+                    rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
+                    var args = string.IsNullOrEmpty(password) ? "/generic:TERMSRV/{0} /user:{1}" : "/generic:TERMSRV/{0} /user:{1} /pass:{2}";
+                    rdcProcess.StartInfo.Arguments = string.Format(args, serverName, userName, password);
+                    rdcProcess.Start();
+                }
+                rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\mstsc.exe");
+                rdcProcess.StartInfo.Arguments = string.Format("/v:{0}", serverName); // ip or name of computer to connect
+                rdcProcess.Start();
 
-            rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\mstsc.exe");
-            rdcProcess.StartInfo.Arguments = string.Format("/v:{0}", serverName); // ip or name of computer to connect
-            rdcProcess.Start();
-
-            //rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
-            //rdcProcess.StartInfo.Arguments = string.Format("/delete:TERMSRV/{0}", serverName); // delete credentials
-            //rdcProcess.Start();
+                //rdcProcess.StartInfo.FileName = Environment.ExpandEnvironmentVariables(@"%SystemRoot%\system32\cmdkey.exe");
+                //rdcProcess.StartInfo.Arguments = string.Format("/delete:TERMSRV/{0}", serverName); // delete credentials
+                //rdcProcess.Start();
+            }
             return true;
         }
     }

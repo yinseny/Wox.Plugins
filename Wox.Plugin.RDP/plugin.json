@@ -1,6 +1,6 @@
 {
   "ID": "A766ABFEB913443996F41690A3CE2CFB",
-  "ActionKeywords": "rdp",
+  "ActionKeywords": [ "rdp" ],
   "Name": "RDP",
   "Description": "RDP History",
   "Author": "yinseny",
