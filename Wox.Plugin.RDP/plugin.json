@@ -4,9 +4,9 @@
   "Name": "RDP",
   "Description": "RDP History",
   "Author": "yinseny",
-  "Version": "1.0.1",
+  "Version": "1.0.2",
   "Language": "csharp",
-  "Website": "http://www.getwox.com/plugin",
+  "Website": "https://github.com/yinseny/Wox.Plugins",
   "ExecuteFileName": "Wox.Plugin.RDP.dll",
   "IcoPath": "Images\\icon.png"
 }
